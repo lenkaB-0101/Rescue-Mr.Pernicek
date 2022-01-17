@@ -15,10 +15,11 @@ let player = {
 }
 
 let game = {
+  timeElement: document.getElementById("time"),
   scoreElement: document.getElementById("score"),
-  score: 0
+  score: 0,
+  time: 0
 }
-
 
 let wall = new Image()
 wall.src = "images/zed.png"
@@ -92,7 +93,6 @@ function increaseScore() {
   game.scoreElement.textContent = `${game.score}/6`
 }
 
-
 function createitems() {
   items.push({
     x: 1,
@@ -151,10 +151,11 @@ function draw() {
 }
 
 function startGame() {
+  game.time = 60
   createitems()
   draw()
+  timer()
 }
-
 
 function movement() {
   if (keys[39] && canMove(player.x + 1, player.y)) {
@@ -182,10 +183,33 @@ function movement() {
   }
 }
 
+function timer() {
+  function startTimer(duration, display) {
+    let timer = duration,
+      minutes,
+      seconds
+
+    setInterval(function () {
+      minutes = parseInt(timer / 60, 10)
+      seconds = parseInt(timer % 60, 10)
+
+      minutes = minutes < 10 ? "0" + minutes : minutes
+      seconds = seconds < 10 ? "0" + seconds : seconds
+
+      display.innerText = minutes + ":" + seconds
+
+      if (--timer < 0) {
+        timer = duration
+      }
+    }, 1000)
+  }
+  startTimer(game.time, game.timeElement)
+}
+
+
 function canMove(x, y) {
   return (y >= 0 && y < board.length && x >= 0 && x < board[y].length && board[y][x] != 1)
 }
-
 
 window.addEventListener("load", startGame)
 
